@@ -30,7 +30,7 @@ import java.util.logging.Logger
 
 
 const val craftingTableB64 =
-    "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzJiN2U2ZDJlY2ZlMWQ1OGU2NjgyMzhiYmE2ZTZlZjMwODYwMTllNzY3MmIwY2JlZTgyYzIzYTg2Zjg1ZmU3ZSJ9fX0="
+    "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTZmZDNkMDNkYWFkNjlmNjYzZjE4ODhiNDg4YzBjYWYzZWE3ZGE3YWUwNTgwZGFlYTVmMzliZDk0MGQ0YjMyYiJ9fX0="
 lateinit var NBT_DATA: NamespacedKey
 lateinit var denchanter_block: ItemStack
 lateinit var log: Logger
