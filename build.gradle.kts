@@ -7,10 +7,12 @@ plugins {
 }
 
 group = "com.shacha"
-version = "1.0.1"
+version = "1.0.2"
 
 repositories {
     mavenCentral()
+    maven ("https://repo.dmulloy2.net/repository/public/")
+    maven ("https://jitpack.io/")
 }
 
 dependencies {
@@ -19,6 +21,18 @@ dependencies {
 
     // KSpigot dependency
     implementation("net.axay", "kspigot", kspigotVersion)
+
+    // ProtocolLib dependency
+    compileOnly("com.comphenix.protocol", "ProtocolLib", "5.0.0-SNAPSHOT")
+
+    // EcoEnchants dependency
+    compileOnly("com.willfp", "EcoEnchants", "8.100.1")
+
+    // Eco dependency
+    compileOnly("com.willfp", "eco", "6.38.1")
+
+    // DeEnchantment dependency
+    compileOnly(fileTree("/libs/compileOnly"))
 }
 
 tasks {
@@ -43,9 +57,13 @@ bukkit {
     name = "Denchanter"
     apiVersion = "1.19"
     prefix = name
-//    depend = listOf(
-//        "kotlin-stdlib"
-//    )
+    depend = listOf(
+        "ProtocolLib"
+    )
+    softDepend = listOf(
+        "EcoEnchants",
+        "DeEnchantment"
+    )
     authors = listOf(
         "shacha",
     )
