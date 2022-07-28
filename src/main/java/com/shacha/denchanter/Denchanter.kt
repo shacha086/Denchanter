@@ -6,6 +6,9 @@ import com.comphenix.protocol.ProtocolManager
 import com.comphenix.protocol.events.PacketContainer
 import com.comphenix.protocol.wrappers.BlockPosition
 import com.comphenix.protocol.wrappers.WrappedBlockData
+import com.shacha.denchanter.GUI.View
+import com.shacha.denchanter.GUI.freeSlot
+import com.shacha.denchanter.GUI.update
 import net.axay.kspigot.chat.KColors
 import net.axay.kspigot.chat.literalText
 import net.axay.kspigot.event.listen
@@ -190,7 +193,7 @@ class Denchanter : KSpigot() {
                 return@listen
             }
 
-            val guiInstance = DenchanterGUI()
+            val guiInstance = View()
             val gui = it.player.openGUI(guiInstance.denchanterGUI) ?: return@listen
             guiInstanceList.add(gui)
             guiInstance.inventoryView = gui

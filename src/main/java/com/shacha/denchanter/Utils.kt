@@ -7,9 +7,12 @@ import net.axay.kspigot.gui.*
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.format.TextDecoration
+import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.craftbukkit.v1_19_R1.block.CraftSkull
+import org.bukkit.enchantments.Enchantment
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.ShapedRecipe
 import org.bukkit.inventory.meta.SkullMeta
@@ -92,3 +95,21 @@ operator fun Component.invoke(builder: LiteralTextBuilder.() -> Unit = { }) = Li
 inline operator fun ItemStack.invoke(builder: ItemStack.() -> Unit) = this.apply(builder)
 
 data class MutablePair<T, U>(var first: T, var second: U)
+
+val ItemStack?.isNullOrAir: Boolean
+    get() = this?.let { it.type == Material.AIR } != false
+
+fun LiteralTextBuilder.displayName(
+    enchantment: Pair<Enchantment, Int>,
+) {
+    if (enchantment.second != 1 || enchantment.first.maxLevel != 1)
+        component(
+            Component.text(" ")
+                .append(
+                    Component.translatable("enchantment.level.${enchantment.second}")
+                )
+        )
+}
+
+fun Player.affordLevel(costLevel: Int) =
+    this.level > costLevel || this.gameMode == GameMode.CREATIVE
