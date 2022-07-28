@@ -51,13 +51,21 @@ class View {
 
             button(
                 Slots.RowOneSlotTwo,
-                prevPageStack,
+                itemStack(Material.BLACK_STAINED_GLASS_PANE) {
+                    meta {
+                        name = literalText()
+                    }
+                },
                 ::onPrevPageClicked
             )
 
             button(
                 Slots.RowOneSlotEight,
-                nextPageStack,
+                itemStack(Material.BLACK_STAINED_GLASS_PANE) {
+                    meta {
+                        name = literalText()
+                    }
+                },
                 ::onNextPageClicked
             )
 

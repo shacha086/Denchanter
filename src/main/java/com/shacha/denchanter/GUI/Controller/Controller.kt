@@ -71,7 +71,13 @@ fun <T : ForInventory> View.onConfirmButtonClicked(event: GUIClickEvent<T>) {
 }
 
 fun <T : ForInventory> onPrevPageClicked(event: GUIClickEvent<T>) {
+    if (event.bukkitEvent.currentItem.isNullOrAir) {
+        return
+    }
 
+    if (event.bukkitEvent.currentItem!!.type != Material.ARROW) {
+        return
+    }
 }
 
 fun <T : ForInventory> onNextPageClicked(event: GUIClickEvent<T>) {
@@ -79,6 +85,9 @@ fun <T : ForInventory> onNextPageClicked(event: GUIClickEvent<T>) {
         return
     }
 
+    if (event.bukkitEvent.currentItem!!.type != Material.ARROW) {
+        return
+    }
 }
 
 fun <T : ForInventory> View.onGUIClose(event: GUICloseEvent<T>) {
@@ -115,8 +124,8 @@ fun <T : ForInventory> View.update(guiInstance: GUIInstance<T>, player: Player) 
             }
         }
     }
-    if (!iter.hasNext()) {
-        nextPageSlot = ItemStack(Material.AIR)
+    if (iter.hasNext()) {
+        nextPageSlot = nextPageStack
     }
     updateResult(player)
 }
