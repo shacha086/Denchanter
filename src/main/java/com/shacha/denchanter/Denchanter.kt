@@ -177,7 +177,10 @@ class Denchanter : KSpigot() {
         }
 
         listen<PlayerInteractEvent> {
-            if (it.clickedBlock?.type != Material.PLAYER_HEAD) {
+            if (it.clickedBlock?.type?.let {
+                    it != Material.PLAYER_HEAD &&
+                            it != Material.PLAYER_WALL_HEAD
+            } == true) {
                 return@listen
             }
 
