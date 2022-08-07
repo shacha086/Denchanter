@@ -78,10 +78,10 @@ class Denchanter : KSpigot() {
             compatibilityList.add(Compatibility.ECOENCHANTS)
         }
 
-        if (server.pluginManager.getPlugin("DeEnchantment") != null) {
-            log.d("DeEnchantment detected. Using DeEnchantment compatibility. ")
-            compatibilityList.add(Compatibility.DEENCHANTMENT)
-        }
+//        if (server.pluginManager.getPlugin("DeEnchantment") != null) {
+//            log.d("DeEnchantment detected. Using DeEnchantment compatibility. ")
+//            compatibilityList.add(Compatibility.DEENCHANTMENT)
+//        }
 
         val denchanterRecipe = newShapedRecipe("denchanter_block_recipe", denchanter_block)
         denchanterRecipe.shape(
@@ -225,28 +225,29 @@ class Denchanter : KSpigot() {
                 return@listen
             }
 
-            if (it.block.type == Material.PLAYER_WALL_HEAD) {
-                it.block.setType(Material.PLAYER_HEAD, true)
-                val state = it.block.state
-                state.javaClass.getDeclaredField("profile").run {
-                    isAccessible = true
-                    set(state, textureProfile(craftingTableB64))
-                }
-                state.update(true, true)
-                val blockUpdatePacket = PacketContainer(PacketType.Play.Server.BLOCK_CHANGE)
-                blockUpdatePacket.modifier.writeDefaults()
-                blockUpdatePacket.blockPositionModifier.write(0, it.block.run { return@run BlockPosition(x, y, z) } )
-                blockUpdatePacket.blockData.write(0, WrappedBlockData.createData(it.block.state.blockData))
-                protocolManager.sendServerPacket(it.player, blockUpdatePacket)
-            }
-
-            it.block.run {
-                blockData = blockData
-                    .merge(
-                        Bukkit.createBlockData(
-                            "minecraft:player_head[rotation=0]"
+//            if (it.block.type == Material.PLAYER_WALL_HEAD) {
+//                it.block.setType(Material.PLAYER_HEAD, true)
+//                val state = it.block.state
+//                state.javaClass.getDeclaredField("profile").run {
+//                    isAccessible = true
+//                    set(state, textureProfile(craftingTableB64))
+//                }
+//                state.update(true, true)
+//                val blockUpdatePacket = PacketContainer(PacketType.Play.Server.BLOCK_CHANGE)
+//                blockUpdatePacket.modifier.writeDefaults()
+//                blockUpdatePacket.blockPositionModifier.write(0, it.block.run { return@run BlockPosition(x, y, z) } )
+//                blockUpdatePacket.blockData.write(0, WrappedBlockData.createData(it.block.state.blockData))
+//                protocolManager.sendServerPacket(it.player, blockUpdatePacket)
+//            }
+            if (it.block.type == Material.PLAYER_HEAD) {
+                it.block.run {
+                    blockData = blockData
+                        .merge(
+                            Bukkit.createBlockData(
+                                "minecraft:player_head[rotation=0]"
+                            )
                         )
-                    )
+                }
             }
         }
     }

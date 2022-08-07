@@ -18,9 +18,9 @@ import net.axay.kspigot.items.name
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.EnchantmentStorageMeta
-import top.iseason.deenchantment.manager.ConfigManager
-import top.iseason.deenchantment.manager.DeEnchantmentWrapper
-import top.iseason.deenchantment.utils.Tools
+//import top.iseason.deenchantment.manager.ConfigManager
+//import top.iseason.deenchantment.manager.DeEnchantmentWrapper
+//import top.iseason.deenchantment.utils.Tools
 
 
 private fun <T : ForInventory> View.onDisabledEnchantmentClicked(event: GUIClickEvent<T>) {
@@ -47,15 +47,16 @@ fun <T : ForInventory> View.onEnabledEnchantmentClicked(event: GUIClickEvent<T>,
     event.bukkitEvent.currentItem = itemStack(Material.BOOK) {
         val enchant = enchantment.first
         val enchantmentName =
-            if (Compatibility.DEENCHANTMENT in compatibilityList && enchant is DeEnchantmentWrapper) {
-                literalText(
-                    "${ConfigManager.getEnchantmentName(enchant.name) ?: return} ${
-                        Tools.intToRome(
-                            enchantment.second
-                        )
-                    }"
-                ) { italic = false; color = KColors.GRAY }
-            } else if (Compatibility.ECOENCHANTS in compatibilityList) {
+//            if (Compatibility.DEENCHANTMENT in compatibilityList && enchant is DeEnchantmentWrapper) {
+//                literalText(
+//                    "${ConfigManager.getEnchantmentName(enchant.name) ?: return} ${
+//                        Tools.intToRome(
+//                            enchantment.second
+//                        )
+//                    }"
+//                ) { italic = false; color = KColors.GRAY }
+//            } else
+            if (Compatibility.ECOENCHANTS in compatibilityList) {
                 if (enchant is EcoEnchant) {
                     literalText(enchant.displayName) {
                         displayName(enchantment)

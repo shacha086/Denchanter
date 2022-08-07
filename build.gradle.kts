@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "com.shacha"
-version = "1.0.2"
+version = "1.0.3"
 
 repositories {
     mavenCentral()
@@ -32,7 +32,7 @@ dependencies {
     compileOnly("com.willfp", "eco", "6.38.1")
 
     // DeEnchantment dependency
-    compileOnly(fileTree("/libs/compileOnly"))
+//    compileOnly(fileTree("/libs/compileOnly"))
 }
 
 tasks {
