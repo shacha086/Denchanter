@@ -18,17 +18,17 @@ import net.axay.kspigot.items.name
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.EnchantmentStorageMeta
-//import top.iseason.deenchantment.manager.ConfigManager
-//import top.iseason.deenchantment.manager.DeEnchantmentWrapper
-//import top.iseason.deenchantment.utils.Tools
 
 
 private fun <T : ForInventory> View.onDisabledEnchantmentClicked(event: GUIClickEvent<T>) {
-    val index =
+    val origIndex =
         (Slots.RowThreeSlotTwo rectTo Slots.RowFourSlotEight).withInvType(View.invType).reversed()
             .binarySearchBy(event.bukkitEvent.slot) { it.realSlotIn(View.invType.dimensions) }
+
+    val index = origIndex + currentPage * 14
+
     val enchantment = enchantmentMap[index].first
-    event.bukkitEvent.currentItem = itemStack(Material.ENCHANTED_BOOK) {
+    val stack = itemStack(Material.ENCHANTED_BOOK) {
         meta<EnchantmentStorageMeta> {
             name = literalText("附魔") { italic = false }
             addStoredEnchant(enchantment.first, enchantment.second, true)
@@ -39,12 +39,14 @@ private fun <T : ForInventory> View.onDisabledEnchantmentClicked(event: GUIClick
             )
         }
     }
+    event.bukkitEvent.currentItem = stack
+    enchantmentStackList[currentPage][origIndex] = stack
     enchantmentMap[index].second = true
 }
 
 fun <T : ForInventory> View.onEnabledEnchantmentClicked(event: GUIClickEvent<T>, item: ItemStack) {
     val enchantment = (item.itemMeta as EnchantmentStorageMeta).storedEnchants.toList()[0]
-    event.bukkitEvent.currentItem = itemStack(Material.BOOK) {
+    val stack = itemStack(Material.BOOK) {
         val enchant = enchantment.first
         val enchantmentName =
 //            if (Compatibility.DEENCHANTMENT in compatibilityList && enchant is DeEnchantmentWrapper) {
@@ -93,7 +95,16 @@ fun <T : ForInventory> View.onEnabledEnchantmentClicked(event: GUIClickEvent<T>,
             )
         }
     }
-    enchantmentMap.firstOrNull() { it.first == enchantment }?.second = false
+
+    val origIndex =
+        (Slots.RowThreeSlotTwo rectTo Slots.RowFourSlotEight).withInvType(View.invType).reversed()
+            .binarySearchBy(event.bukkitEvent.slot) { it.realSlotIn(View.invType.dimensions) }
+
+    val index = origIndex + currentPage * 14
+
+    event.bukkitEvent.currentItem = stack
+    enchantmentStackList[currentPage][origIndex] = stack
+    enchantmentMap[index].second = false
 }
 
 fun <T : ForInventory> View.onEnchantmentClicked(event: GUIClickEvent<T>) {

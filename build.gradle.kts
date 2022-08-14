@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "com.shacha"
-version = "1.0.3"
+version = "1.0.4"
 
 repositories {
     mavenCentral()
@@ -23,7 +23,7 @@ dependencies {
     implementation("net.axay", "kspigot", kspigotVersion)
 
     // ProtocolLib dependency
-    compileOnly("com.comphenix.protocol", "ProtocolLib", "5.0.0-SNAPSHOT")
+//    compileOnly("com.comphenix.protocol", "ProtocolLib", "5.0.0-SNAPSHOT")
 
     // EcoEnchants dependency
     compileOnly("com.willfp", "EcoEnchants", "8.100.1")
@@ -58,11 +58,11 @@ bukkit {
     apiVersion = "1.19"
     prefix = name
     depend = listOf(
-        "ProtocolLib"
+//        "ProtocolLib"
     )
     softDepend = listOf(
         "EcoEnchants",
-        "DeEnchantment"
+//        "DeEnchantment"
     )
     authors = listOf(
         "shacha",

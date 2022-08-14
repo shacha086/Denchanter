@@ -70,23 +70,35 @@ fun <T : ForInventory> View.onConfirmButtonClicked(event: GUIClickEvent<T>) {
     }
 }
 
-fun <T : ForInventory> onPrevPageClicked(event: GUIClickEvent<T>) {
+fun <T : ForInventory> View.onPrevPageClicked(event: GUIClickEvent<T>) {
     if (event.bukkitEvent.currentItem.isNullOrAir) {
         return
     }
 
     if (event.bukkitEvent.currentItem!!.type != Material.ARROW) {
         return
+    }
+
+    if (currentPage <= maxPage) {
+        currentPage--
+        updateArrow()
+        updateEnchantments(event.guiInstance)
     }
 }
 
-fun <T : ForInventory> onNextPageClicked(event: GUIClickEvent<T>) {
+fun <T : ForInventory> View.onNextPageClicked(event: GUIClickEvent<T>) {
     if (event.bukkitEvent.currentItem.isNullOrAir) {
         return
     }
 
     if (event.bukkitEvent.currentItem!!.type != Material.ARROW) {
         return
+    }
+
+    if (currentPage < maxPage) {
+        currentPage++
+        updateArrow()
+        updateEnchantments(event.guiInstance)
     }
 }
 
@@ -96,25 +108,28 @@ fun <T : ForInventory> View.onGUIClose(event: GUICloseEvent<T>) {
 }
 
 fun <T : ForInventory> View.update(guiInstance: GUIInstance<T>, player: Player) {
+    enchantmentStackList.clear()
     enchantmentMap.clear()
-
+    maxPage = 0
+    currentPage = 0
     if (freeSlot.isNullOrAir) {
-        for (x in (Slots.RowThreeSlotTwo rectTo Slots.RowFourSlotEight).withInvType(View.invType)) {
-            guiInstance[x.getCompound()] = ItemStack(Material.AIR)
-        }
+        updateArrow()
         updateResult(player)
+        updateEnchantments(guiInstance)
         return
     }
 
     val enchantments = freeSlot?.enchantments ?: return
     if (enchantments.isEmpty()) return
-    val iter = enchantments.iterator()
-    for (x in (Slots.RowThreeSlotTwo rectTo Slots.RowFourSlotEight).withInvType(View.invType).reversed()) {
-        if (!iter.hasNext()) {
-            break
+    var counter = -1
+    for (enchantment in enchantments) {
+        if (enchantmentStackList.isEmpty() || enchantmentStackList[counter].size >= 14) {
+            enchantmentStackList.add(mutableListOf())
+            counter++
         }
-        guiInstance[x.getCompound()] = itemStack(Material.ENCHANTED_BOOK) {
-            iter.next().let { entry ->
+
+        enchantmentStackList[counter].add(itemStack(Material.ENCHANTED_BOOK) {
+            enchantment.let { entry ->
                 enchantmentMap.add(entry.toPair() of true)
                 meta<EnchantmentStorageMeta> {
                     name = literalText("附魔") { italic = false }
@@ -122,14 +137,50 @@ fun <T : ForInventory> View.update(guiInstance: GUIInstance<T>, player: Player) 
                     lore(listOf(literalText(), literalText("点击去除此附魔") { italic = true; color = KColors.GRAY }))
                 }
             }
-        }
+        })
     }
-    if (iter.hasNext()) {
-        nextPageSlot = nextPageStack
-    }
+    maxPage = enchantmentStackList.lastIndex
+    updateArrow()
     updateResult(player)
+    updateEnchantments(guiInstance)
 }
 
+private fun View.updateArrow() {
+    if (enchantmentStackList.size > 1) {
+        nextPageSlot = if (currentPage < maxPage) {
+            nextPageStack
+        } else {
+            placeHolderStack
+        }
+        prevPageSlot = if (currentPage != 0) {
+            prevPageStack
+        } else {
+            placeHolderStack
+        }
+    } else {
+        nextPageSlot = placeHolderStack
+        prevPageSlot = placeHolderStack
+    }
+}
+
+internal fun <T : ForInventory> View.updateEnchantments(guiInstance: GUIInstance<T>) {
+    if (enchantmentStackList.isEmpty()) {
+        for (x in (Slots.RowThreeSlotTwo rectTo Slots.RowFourSlotEight).withInvType(View.invType)) {
+            guiInstance[x.getCompound()] = ItemStack(Material.AIR)
+        }
+        return
+    }
+
+    val list = enchantmentStackList[currentPage]
+    val iter = list.iterator()
+    for (x in (Slots.RowThreeSlotTwo rectTo Slots.RowFourSlotEight).withInvType(View.invType).reversed()) {
+        if (!iter.hasNext()) {
+            guiInstance[x.getCompound()] = ItemStack(Material.AIR)
+            continue
+        }
+        guiInstance[x.getCompound()] = iter.next()
+    }
+}
 
 internal fun View.updateResult(player: Player) {
     val result = freeSlot?.clone()

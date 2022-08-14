@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="仅调试" type="JarApplication">
+    <option name="JAR_PATH" value="$USER_HOME$/Downloads/Minecraft 开发/purpur-1.19.2-1759.jar" />
+    <option name="PROGRAM_PARAMETERS" value="-nogui" />
+    <option name="WORKING_DIRECTORY" value="$USER_HOME$/Downloads/Minecraft 开发" />
+    <option name="ALTERNATIVE_JRE_PATH" />
+    <method v="2">
+      <option name="ToolBeforeRunTask" enabled="true" actionId="Tool_External Tools_copy" />
+    </method>
+  </configuration>
+</component>

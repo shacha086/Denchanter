@@ -3,10 +3,11 @@ package com.shacha.denchanter
 import com.mojang.authlib.GameProfile
 import com.mojang.authlib.properties.Property
 import net.axay.kspigot.chat.LiteralTextBuilder
-import net.axay.kspigot.gui.*
+import net.axay.kspigot.gui.ForInventory
+import net.axay.kspigot.gui.GUIType
+import net.axay.kspigot.gui.InventorySlot
+import net.axay.kspigot.gui.InventorySlotCompound
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.Style
-import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -17,6 +18,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.ShapedRecipe
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.plugin.java.JavaPlugin
+import java.lang.reflect.Field
 import java.util.*
 import java.util.logging.Logger
 
@@ -113,3 +115,29 @@ fun LiteralTextBuilder.displayName(
 
 fun Player.affordLevel(costLevel: Int) =
     this.level > costLevel || this.gameMode == GameMode.CREATIVE
+
+fun Int.ensureIn(range: IntRange): Int {
+    if (this in range) {
+        return this
+    }
+
+    if (this < range.first) {
+        return range.first
+    }
+
+    return range.last
+}
+
+@Suppress("UNCHECKED_CAST")
+fun <T> Any?.cast() = this as T
+
+inline fun <reified T> Any?.castOrNull(): T? {
+    if (this is T) {
+        return this
+    }
+    return null
+}
+
+fun <T> Field.get(obj: Any?) = this.get(obj).cast<T>()
+
+inline fun <reified T> Field.getOrNull(obj: Any?) = this.get(obj).castOrNull<T>()

@@ -1,17 +1,15 @@
 package com.shacha.denchanter
 
-import com.comphenix.protocol.PacketType
-import com.comphenix.protocol.ProtocolLibrary
-import com.comphenix.protocol.ProtocolManager
-import com.comphenix.protocol.events.PacketContainer
-import com.comphenix.protocol.wrappers.BlockPosition
-import com.comphenix.protocol.wrappers.WrappedBlockData
 import com.shacha.denchanter.GUI.View
 import com.shacha.denchanter.GUI.freeSlot
+import com.shacha.denchanter.GUI.onGUIClose
 import com.shacha.denchanter.GUI.update
+import io.papermc.paper.network.ConnectionEvent
 import net.axay.kspigot.chat.KColors
 import net.axay.kspigot.chat.literalText
 import net.axay.kspigot.event.listen
+import net.axay.kspigot.gui.GUI
+import net.axay.kspigot.gui.GUIInstance
 import net.axay.kspigot.gui.openGUI
 import net.axay.kspigot.items.itemStack
 import net.axay.kspigot.items.meta
@@ -32,6 +30,9 @@ import org.bukkit.event.inventory.InventoryDragEvent
 import org.bukkit.event.inventory.InventoryType.CRAFTING
 import org.bukkit.event.inventory.InventoryType.SlotType
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.player.PlayerKickEvent
+import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.InventoryView
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
@@ -45,9 +46,8 @@ const val craftingTableB64 =
 lateinit var NBT_DATA: NamespacedKey
 lateinit var denchanter_block: ItemStack
 lateinit var log: Logger
-lateinit var protocolManager: ProtocolManager
 val compatibilityList = mutableListOf<Compatibility>()
-val guiInstanceList = mutableListOf<InventoryView>()
+val guiInstanceList = mutableListOf<GUI<*>>()
 
 @Suppress("unused")
 class Denchanter : KSpigot() {
@@ -60,7 +60,6 @@ class Denchanter : KSpigot() {
         INSTANCE = this
         log = logger
         NBT_DATA = NamespacedKey(this, "nbt_data")
-        protocolManager = ProtocolLibrary.getProtocolManager()
         denchanter_block = itemStack(Material.PLAYER_HEAD) {
             amount = 1
             meta {
@@ -77,11 +76,6 @@ class Denchanter : KSpigot() {
             log.d("EcoEnchants detected. Using Eco compatibility. ")
             compatibilityList.add(Compatibility.ECOENCHANTS)
         }
-
-//        if (server.pluginManager.getPlugin("DeEnchantment") != null) {
-//            log.d("DeEnchantment detected. Using DeEnchantment compatibility. ")
-//            compatibilityList.add(Compatibility.DEENCHANTMENT)
-//        }
 
         val denchanterRecipe = newShapedRecipe("denchanter_block_recipe", denchanter_block)
         denchanterRecipe.shape(
@@ -198,7 +192,7 @@ class Denchanter : KSpigot() {
 
             val guiInstance = View()
             val gui = it.player.openGUI(guiInstance.denchanterGUI) ?: return@listen
-            guiInstanceList.add(gui)
+            guiInstanceList.add(guiInstance.denchanterGUI)
             guiInstance.inventoryView = gui
             listen<InventoryClickEvent> click@{ e ->
                 if (e.view != gui) {
@@ -253,10 +247,23 @@ class Denchanter : KSpigot() {
                 }
             }
         }
+
+        listen<PlayerQuitEvent> { e ->
+            guiInstanceList.firstOrNull {
+                it.getAllInstances().any { gui ->
+                    gui.javaClass.getField("bukkitInventory")
+                        .get<Inventory>(gui).viewers
+                        .any { human -> human == e.player }
+                }
+            }?.closeGUI()
+        }
     }
 
     override fun shutdown() {
         Bukkit.resetRecipes()
-        guiInstanceList.forEach { it.close() }
+        guiInstanceList.forEach {
+            it.closeGUI()
+            logger.d("${it.hashCode()} closed.")
+        }
     }
 }
