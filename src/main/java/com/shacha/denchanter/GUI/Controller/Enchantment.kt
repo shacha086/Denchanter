@@ -2,8 +2,7 @@ package com.shacha.denchanter.GUI.Controller
 
 import com.shacha.denchanter.*
 import com.shacha.denchanter.GUI.View
-import com.shacha.denchanter.GUI.enchantmentMap
-import com.shacha.denchanter.GUI.updateResult
+import com.willfp.eco.util.toNiceString
 import com.willfp.ecoenchants.EcoEnchantsPlugin
 import com.willfp.ecoenchants.enchantments.EcoEnchant
 import net.axay.kspigot.chat.KColors
@@ -78,8 +77,7 @@ fun <T : ForInventory> View.onEnabledEnchantmentClicked(event: GUIClickEvent<T>,
                     @Suppress("MoveLambdaOutsideParentheses")
                     enchant.displayName(enchantment.second)({ italic = false })
                 } catch (e: AbstractMethodError) {
-                    literalText(enchant.name.lowercase().replace("_", " ")
-                        .replaceFirstChar { it.uppercaseChar() }) {
+                    literalText(enchant.key.toNiceString()) {
                         displayName(enchantment)
                         italic = false; color = KColors.GRAY
                     }

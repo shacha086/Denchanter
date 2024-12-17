@@ -1,7 +1,6 @@
 package com.shacha.denchanter.GUI
 
-import com.shacha.denchanter.GUI.Controller.onEnchantmentClicked
-import com.shacha.denchanter.ensureIn
+import com.shacha.denchanter.GUI.Controller.*
 import net.axay.kspigot.chat.KColors
 import net.axay.kspigot.chat.literalText
 import net.axay.kspigot.gui.*
@@ -11,7 +10,6 @@ import net.axay.kspigot.items.name
 import org.bukkit.Material
 import org.bukkit.inventory.InventoryView
 import org.bukkit.inventory.ItemStack
-import kotlin.math.max
 
 class View {
     lateinit var inventoryView: InventoryView
@@ -22,7 +20,7 @@ class View {
 
     var currentPage = 0
         set(value) {
-            field = value.ensureIn(0..maxPage)
+            field = value.coerceIn(0..maxPage)
         }
 
 

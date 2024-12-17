@@ -1,8 +1,8 @@
 val javaVersion = 17
-val kspigotVersion = "1.19.0"
+val kspigotVersion = "1.20.1"
 plugins {
     kotlin("jvm") version "1.7.10"
-    id("io.papermc.paperweight.userdev") version "1.3.8"
+    id("io.papermc.paperweight.userdev") version "1.7.7"
     id("net.minecrell.plugin-yml.bukkit") version "0.5.1"
 }
 
@@ -14,10 +14,10 @@ repositories {
     maven ("https://repo.dmulloy2.net/repository/public/")
     maven ("https://jitpack.io/")
 }
-
+//paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
 dependencies {
     // PaperMC Dependency
-    paperDevBundle("1.19-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.20.1-R0.1-SNAPSHOT")
 
     // KSpigot dependency
     implementation("net.axay", "kspigot", kspigotVersion)
@@ -55,7 +55,7 @@ tasks {
 
 bukkit {
     name = "Denchanter"
-    apiVersion = "1.19"
+    apiVersion = "1.21"
     prefix = name
     depend = listOf(
 //        "ProtocolLib"

@@ -1,6 +1,7 @@
-package com.shacha.denchanter.GUI
+package com.shacha.denchanter.GUI.Controller
 
 import com.shacha.denchanter.*
+import com.shacha.denchanter.GUI.View
 import net.axay.kspigot.chat.KColors
 import net.axay.kspigot.chat.literalText
 import net.axay.kspigot.extensions.bukkit.give
@@ -103,7 +104,7 @@ fun <T : ForInventory> View.onNextPageClicked(event: GUIClickEvent<T>) {
 }
 
 fun <T : ForInventory> View.onGUIClose(event: GUICloseEvent<T>) {
-    freeSlot?.let { it -> event.player.give(it) }
+    freeSlot?.let { event.player.give(it) }
     event.guiInstance
 }
 

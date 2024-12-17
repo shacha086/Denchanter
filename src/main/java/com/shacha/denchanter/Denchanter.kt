@@ -1,15 +1,12 @@
 package com.shacha.denchanter
 
 import com.shacha.denchanter.GUI.View
-import com.shacha.denchanter.GUI.freeSlot
-import com.shacha.denchanter.GUI.onGUIClose
-import com.shacha.denchanter.GUI.update
-import io.papermc.paper.network.ConnectionEvent
+import com.shacha.denchanter.GUI.Controller.freeSlot
+import com.shacha.denchanter.GUI.Controller.update
 import net.axay.kspigot.chat.KColors
 import net.axay.kspigot.chat.literalText
 import net.axay.kspigot.event.listen
 import net.axay.kspigot.gui.GUI
-import net.axay.kspigot.gui.GUIInstance
 import net.axay.kspigot.gui.openGUI
 import net.axay.kspigot.items.itemStack
 import net.axay.kspigot.items.meta
@@ -19,7 +16,7 @@ import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
-import org.bukkit.craftbukkit.v1_19_R1.block.CraftSkull
+import org.bukkit.block.Skull
 import org.bukkit.entity.Player
 import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockBreakEvent
@@ -30,10 +27,8 @@ import org.bukkit.event.inventory.InventoryDragEvent
 import org.bukkit.event.inventory.InventoryType.CRAFTING
 import org.bukkit.event.inventory.InventoryType.SlotType
 import org.bukkit.event.player.PlayerInteractEvent
-import org.bukkit.event.player.PlayerKickEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.inventory.Inventory
-import org.bukkit.inventory.InventoryView
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.persistence.PersistentDataType
@@ -139,7 +134,7 @@ class Denchanter : KSpigot() {
                         return@listen
                     }
 
-                    if (it.cursor?.isDenchanter() ?: return@listen) {
+                    if (it.cursor.isDenchanter()) {
                         it.isCancelled = true
                     }
                 }
@@ -160,7 +155,7 @@ class Denchanter : KSpigot() {
                 return@listen
             }
 
-            if (!(it.block.state as CraftSkull).isDenchanter()) {
+            if (!(it.block.state as Skull).isDenchanter()) {
                 return@listen
             }
 
@@ -182,7 +177,7 @@ class Denchanter : KSpigot() {
                 return@listen
             }
 
-            if (!(it.clickedBlock!!.state as CraftSkull).isDenchanter()) {
+            if (!(it.clickedBlock!!.state as Skull).isDenchanter()) {
                 return@listen
             }
 

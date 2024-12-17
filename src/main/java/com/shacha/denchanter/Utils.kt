@@ -11,7 +11,7 @@ import net.kyori.adventure.text.Component
 import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
-import org.bukkit.craftbukkit.v1_19_R1.block.CraftSkull
+import org.bukkit.block.Skull
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -79,12 +79,13 @@ fun Logger.d(obj: Any?) {
     this.info("$obj")
 }
 
-fun CraftSkull.isDenchanter(): Boolean {
+fun Skull.isDenchanter(): Boolean {
     val profile = this.javaClass.getDeclaredField("profile").run {
         isAccessible = true
         get(this@isDenchanter) as GameProfile?
     } ?: return false
-    return (profile.properties.get("textures").toList()[0] as Property).value == craftingTableB64
+    return Property::class.java.getDeclaredField("value").apply { isAccessible = true }
+        .get(profile.properties.get("textures").toList()[0] as Property) == craftingTableB64
 }
 
 fun LinkedHashSet<InventorySlot>.reversed(): List<InventorySlot> {
@@ -92,7 +93,8 @@ fun LinkedHashSet<InventorySlot>.reversed(): List<InventorySlot> {
     return sortedWith(Comparator { l, r -> return@Comparator -(l.row.compareTo(r.row)) })
 }
 
-operator fun Component.invoke(builder: LiteralTextBuilder.() -> Unit = { }) = LiteralTextBuilder(this).apply(builder).build()
+operator fun Component.invoke(builder: LiteralTextBuilder.() -> Unit = { }) =
+    LiteralTextBuilder(this).apply(builder).build()
 
 inline operator fun ItemStack.invoke(builder: ItemStack.() -> Unit) = this.apply(builder)
 
@@ -116,6 +118,7 @@ fun LiteralTextBuilder.displayName(
 fun Player.affordLevel(costLevel: Int) =
     this.level > costLevel || this.gameMode == GameMode.CREATIVE
 
+@Deprecated("Use Int.coerceIn() instead.")
 fun Int.ensureIn(range: IntRange): Int {
     if (this in range) {
         return this
@@ -131,13 +134,5 @@ fun Int.ensureIn(range: IntRange): Int {
 @Suppress("UNCHECKED_CAST")
 fun <T> Any?.cast() = this as T
 
-inline fun <reified T> Any?.castOrNull(): T? {
-    if (this is T) {
-        return this
-    }
-    return null
-}
-
 fun <T> Field.get(obj: Any?) = this.get(obj).cast<T>()
 
-inline fun <reified T> Field.getOrNull(obj: Any?) = this.get(obj).castOrNull<T>()
